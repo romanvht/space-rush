@@ -10,10 +10,10 @@ class Game {
         this.centerX = this.gameCanvas.width / 2;
         this.centerY = this.gameCanvas.height / 2;
 
-        this.squareSize = 35;
+        this.squareSize = 30;
         this.foodSize = 20;
         this.trackSize = 300;
-        this.innerSquareSize = 150;
+        this.innerSquareSize = 160;
 
         this.sideСoordinates = this.getСoordinates();
 
@@ -26,10 +26,14 @@ class Game {
         this.squareColors = ['#50fb78', '#fb5050', '#5078fb'];
         this.squareColor = this.getRandomColor();
 
-        this.direction = 'right';
+        this.direction = 'up';
         this.reverse = false;
 
-        this.position = { x: this.centerX, y: this.centerY - this.trackSize / 2 + this.squareSize / 2 }
+        this.position = { 
+            x: this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.squareSize / 2), 
+            y: this.centerY - this.squareSize / 2 
+        }
+
         this.lastTime = 0;
         this.speed = 4;
 
@@ -71,9 +75,13 @@ class Game {
     }
 
     restart() {
-        this.position = { x: this.centerX, y: this.centerY - this.trackSize / 2 + this.squareSize / 2 };
+        this.position = { 
+            x: this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.squareSize / 2), 
+            y: this.centerY - this.squareSize / 2 
+        }
+
         this.score = 0;
-        this.direction = 'right';
+        this.direction = 'up';
         this.reverse = false;
         this.gameOver = false;
         this.fragments = [];
@@ -132,26 +140,28 @@ class Game {
         const coordinates = {
             top: {
                 start: this.centerY - this.trackSize / 2,
-                end: this.centerY - (this.trackSize - this.innerSquareSize) / 2,
-                center: ((this.centerY - (this.trackSize - this.innerSquareSize) / 2) - (this.centerY - this.trackSize / 2)) / 2
+                end: this.centerY - this.innerSquareSize / 2,
+                center: ((this.centerY - this.innerSquareSize / 2) - (this.centerY - this.trackSize / 2)) / 2
             },
             bottom: {
-                start: this.centerY + (this.trackSize - this.innerSquareSize) / 2,
+                start: this.centerY + this.innerSquareSize / 2,
                 end: this.centerY + this.trackSize / 2,
-                center: ((this.centerY - (this.trackSize - this.innerSquareSize) / 2) - (this.centerY - this.trackSize / 2)) / 2
+                center: ((this.centerY - this.innerSquareSize / 2) - (this.centerY - this.trackSize / 2)) / 2
             },
             left: {
                 start: this.centerX - this.trackSize / 2,
-                end: this.centerX - (this.trackSize - this.innerSquareSize) / 2,
-                center: ((this.centerX - (this.trackSize - this.innerSquareSize) / 2) - (this.centerX - this.trackSize / 2)) / 2
+                end: this.centerX - this.innerSquareSize / 2,
+                center: ((this.centerX - this.innerSquareSize / 2) - (this.centerX - this.trackSize / 2)) / 2
             },
             right: {
-                start: this.centerX + (this.trackSize - this.innerSquareSize) / 2,
+                start: this.centerX + this.innerSquareSize / 2,
                 end: this.centerX + this.trackSize / 2,
-                center: ((this.centerX - (this.trackSize - this.innerSquareSize) / 2) - (this.centerX - this.trackSize / 2)) / 2
+                center: ((this.centerX - this.innerSquareSize / 2) - (this.centerX - this.trackSize / 2)) / 2
             }
         }
-
+        console.log(this.centerX)
+        console.log(this.centerY)
+        console.log(coordinates)
         return coordinates;
     } 
 
@@ -281,15 +291,16 @@ class Game {
         let foodX, foodY;
         if (randomSide === 'top') {
             foodX = this.centerX - this.foodSize / 2;
-            foodY = this.sideСoordinates.top.end - this.sideСoordinates.top.center - this.foodSize / 2;
+            foodY = this.sideСoordinates.top.end - this.sideСoordinates.top.center - (this.foodSize / 2);
         } else if (randomSide === 'bottom') {
             foodX = this.centerX - this.foodSize / 2;
-            foodY = this.sideСoordinates.bottom.end - this.sideСoordinates.bottom.center - this.foodSize / 2;
+            foodY = this.sideСoordinates.bottom.end - this.sideСoordinates.bottom.center - (this.foodSize / 2);
+            console.log(foodY);
         } else if (randomSide === 'left') {
-            foodX = this.sideСoordinates.left.end - this.sideСoordinates.left.center - this.foodSize / 2;
+            foodX = this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.foodSize / 2);
             foodY = this.centerY - this.foodSize / 2;
         } else if (randomSide === 'right') {
-            foodX = this.sideСoordinates.right.end - this.sideСoordinates.right.center - this.foodSize / 2;
+            foodX = this.sideСoordinates.right.end - this.sideСoordinates.right.center - (this.foodSize / 2);
             foodY = this.centerY - this.foodSize / 2;
         }
 
