@@ -1,6 +1,6 @@
 @font-face {
 	font-family: "Impact";
-	src: url("../fonts/impact/Impact.woff2") format("woff2");
+	src: url("../fonts/impact.woff2") format("woff2");
 	font-weight: normal;
 	font-style: normal;
 }
@@ -10,7 +10,7 @@
 }
 
 html, body {
-    font-family: "Impact";
+    font-family: "Impact", Arial, sans-serif;
     overflow: hidden;
     margin: 0;
     padding: 0;
