@@ -60,7 +60,6 @@ class Game {
 
     initHandlers() {
         this.gameCanvas.addEventListener('click', this.onClick.bind(this));
-        this.gameCanvas.addEventListener('touchstart', this.onClick.bind(this));
         window.addEventListener('resize', this.onResize.bind(this));
     }
 
