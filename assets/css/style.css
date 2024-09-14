@@ -3,11 +3,11 @@
 }
 
 html, body {
+    overflow: hidden;
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
-    overflow: hidden;
 }
 
 body {
@@ -15,9 +15,7 @@ body {
 }
 
 canvas {
-    position: absolute;
-    max-width: 100%;
-    max-height: 100%;
+    position: fixed;
     top: 0;
     left: 0;
 }
@@ -27,13 +25,13 @@ canvas {
 }
 
 #game {
-    z-index: 2;
     transform: rotate(45deg);
     transform-origin: center center;
+    z-index: 2;
 }
 
 .overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;

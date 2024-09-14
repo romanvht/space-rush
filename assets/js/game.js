@@ -159,9 +159,7 @@ class Game {
                 center: ((this.centerX - this.innerSquareSize / 2) - (this.centerX - this.trackSize / 2)) / 2
             }
         }
-        console.log(this.centerX)
-        console.log(this.centerY)
-        console.log(coordinates)
+
         return coordinates;
     } 
 
@@ -295,7 +293,6 @@ class Game {
         } else if (randomSide === 'bottom') {
             foodX = this.centerX - this.foodSize / 2;
             foodY = this.sideСoordinates.bottom.end - this.sideСoordinates.bottom.center - (this.foodSize / 2);
-            console.log(foodY);
         } else if (randomSide === 'left') {
             foodX = this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.foodSize / 2);
             foodY = this.centerY - this.foodSize / 2;
