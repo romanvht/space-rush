@@ -18,8 +18,8 @@ class Game {
         this.sideСoordinates = this.getСoordinates();
 
         this.positionHistory = [];
-        this.trailLength = 6;
-        this.trailSize = this.squareSize / 3;
+        this.trailLength = 8;
+        this.trailSize = this.squareSize / 2;
 
         this.fragments = [];
 
@@ -86,6 +86,7 @@ class Game {
         this.gameOver = false;
         this.fragments = [];
         this.positionHistory = [];
+        this.squareColor = this.getRandomColor();
         this.food = this.generateFood();
         
         this.start();
@@ -347,27 +348,31 @@ class Game {
 
         this.gameCtx.fillStyle = 'rgba(255, 255, 255, .05)';
         this.gameCtx.fillRect(this.centerX - this.trackSize / 2, this.centerY - this.trackSize / 2, this.trackSize, this.trackSize);
-
         this.gameCtx.clearRect(this.centerX - this.innerSquareSize / 2, this.centerY - this.innerSquareSize / 2, this.innerSquareSize, this.innerSquareSize);
 
         if (!this.gameOver) {
-            this.gameCtx.fillStyle = this.squareColor;
-
             for (let i = 1; i <= this.trailLength; i++) {
-                const index = i * 10 + 6;
+                const index = i * 5 + 8;
                 if (index < this.positionHistory.length) {
                     const pos = this.positionHistory[index];
-                    const size = this.trailSize * (1 - (i - 1) * 0.2);
+                    const size = Math.max(this.squareSize / 10, this.trailSize * Math.max(0, 1 - i / this.trailLength));
                     
+                    const jitterX = (Math.random() - 0.5) * 4 * (i / this.trailLength);
+                    const jitterY = (Math.random() - 0.5) * 4 * (i / this.trailLength);
+
+                    const alpha = Math.ceil((1 - (i / this.trailLength)) * 100);
+                    this.gameCtx.fillStyle = `${this.squareColor}${alpha}`;
+
                     this.gameCtx.fillRect(
-                        pos.x + (this.squareSize - size) / 2, 
-                        pos.y + (this.squareSize - size) / 2, 
+                        pos.x + (this.squareSize - size) / 2 + jitterX, 
+                        pos.y + (this.squareSize - size) / 2 + jitterY, 
                         size, 
                         size
                     );
                 }
             }
 
+            this.gameCtx.fillStyle = this.squareColor;
             this.gameCtx.fillRect(this.position.x, this.position.y, this.squareSize, this.squareSize);
         } else {
             this.renderFragments();
