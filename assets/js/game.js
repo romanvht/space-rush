@@ -352,7 +352,7 @@ class Game {
 
         if (!this.gameOver) {
             for (let i = 1; i <= this.trailLength; i++) {
-                const index = i * 5 + 8;
+                const index = i * 5;
                 if (index < this.positionHistory.length) {
                     const pos = this.positionHistory[index];
                     const size = Math.max(this.squareSize / 10, this.trailSize * Math.max(0, 1 - i / this.trailLength));
