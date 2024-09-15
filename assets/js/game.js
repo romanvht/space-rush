@@ -56,6 +56,10 @@ class Game {
         this.starsCtx = this.starsCanvas.getContext('2d');
 
         this.menu = new Menu();
+
+        this.foodSound = new Audio('assets/sounds/food.wav');
+        this.gameOverSound = new Audio('assets/sounds/over.wav');
+        this.turnSound = new Audio('assets/sounds/turn.wav');
     }
 
     initHandlers() {
@@ -111,6 +115,7 @@ class Game {
     onClick() {
         if (this.gameStart && !this.gameOver) {
             this.changeDirection();
+            this.turnSound.play();
         }
     }
 
@@ -238,12 +243,14 @@ class Game {
 
         if (this.position.y < top.start || this.position.y > bottom.end - square || this.position.x < left.start || this.position.x > right.end - square) {
             this.gameOver = true;
+            this.gameOverSound.play();
             this.generateFragments();
             this.menu.showOverlay(this.menu.restartOverlay);
         }
 
         if (this.position.y < bottom.start && this.position.y > top.end - square && this.position.x < right.start && this.position.x > left.end - square) {
             this.gameOver = true;
+            this.gameOverSound.play();
             this.generateFragments();
             this.menu.showOverlay(this.menu.restartOverlay);
         }
@@ -253,6 +260,7 @@ class Game {
         if (Math.abs(this.position.x - this.food.x) < this.squareSize && Math.abs(this.position.y - this.food.y) < this.squareSize) {
             this.score++;
             this.speed = this.speed + 0.02;
+            this.foodSound.play();
             this.food = this.generateFood();
             if (Math.random() < 0.3) this.reverseDirection();
         }
