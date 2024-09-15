@@ -3,8 +3,6 @@
 }
 
 html, body {
-    font-family: Arial, sans-serif;
-    font-weight: bold;
     overflow: hidden;
     margin: 0;
     padding: 0;
@@ -13,6 +11,8 @@ html, body {
 }
 
 body {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
     background-color: #0a0f28;
 }
 
@@ -70,3 +70,11 @@ button {
 button:hover {
     background-color: #2142b1;
 }
+
+@media (max-width: 700px) {
+    #game {
+        transform: scale(0.8) rotate(45deg);
+        transform-origin: center center;
+    }
+}
+  
