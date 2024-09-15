@@ -37,11 +37,10 @@ class Game {
         this.trailInterval = 0.05;
         this.trailTimer = 0;
         this.lastTime = 0;
-        this.score = 0;
 
         this.gameStart = false;
         this.gameOver = false;
-        this.reverse = false;
+        this.score = 0;
 
         this.generateStars(100);
         this.render();
