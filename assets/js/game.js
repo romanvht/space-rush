@@ -77,6 +77,7 @@ class Game {
         }
 
         this.score = 0;
+        this.speed = 4;
         this.direction = 'up';
         this.reverse = false;
         this.gameOver = false;
@@ -251,11 +252,9 @@ class Game {
     checkFood() {
         if (Math.abs(this.position.x - this.food.x) < this.squareSize && Math.abs(this.position.y - this.food.y) < this.squareSize) {
             this.score++;
+            this.speed = this.speed + 0.02;
             this.food = this.generateFood();
-
-            if (Math.random() < 0.3) {
-                this.reverseDirection();
-            }
+            if (Math.random() < 0.3) this.reverseDirection();
         }
     }
 
