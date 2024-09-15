@@ -386,7 +386,7 @@ class Game {
         this.gameCtx.translate(this.centerX, this.centerY);
         this.gameCtx.rotate(-Math.PI / 4);
         this.gameCtx.fillStyle = 'rgba(255, 255, 255, .2)';
-        this.gameCtx.font = '48px Impact';
+        this.gameCtx.font = 'Bold 48px Arial';
         this.gameCtx.textAlign = 'center';
         this.gameCtx.fillText(this.score, 0, 18);
         this.gameCtx.restore();
