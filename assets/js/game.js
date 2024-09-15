@@ -17,7 +17,7 @@ class Game {
 
         this.trackSize = 300;
         this.innerSquareSize = 160;
-        this.sideСoordinates = this.getСoordinates();
+        this.sideCoordinates = this.getCoordinates();
         this.squareSize = 30;
         this.squareColor = this.getRandomColor();
         this.speed = 4;
@@ -28,7 +28,7 @@ class Game {
         this.foodRotation = 0;
 
         this.position = { 
-            x: this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.squareSize / 2), 
+            x: this.sideCoordinates.left.end - this.sideCoordinates.left.center - (this.squareSize / 2), 
             y: this.centerY - this.squareSize / 2 
         }
 
@@ -55,14 +55,17 @@ class Game {
         this.gameCtx = this.gameCanvas.getContext('2d');
         this.starsCtx = this.starsCanvas.getContext('2d');
 
-        this.menu = new Menu();
+        this.menu = new Menu(this);
 
         this.foodSound = new Audio('assets/sounds/food.wav');
         this.gameOverSound = new Audio('assets/sounds/over.wav');
         this.turnSound = new Audio('assets/sounds/turn.wav');
+        this.ambientSound = new Audio('assets/sounds/ambient.wav');
+        this.ambientSound.loop = true;
     }
 
     initHandlers() {
+        this.menu.init();
         this.gameCanvas.addEventListener('click', this.onClick.bind(this));
         window.addEventListener('resize', this.onResize.bind(this));
     }
@@ -70,13 +73,14 @@ class Game {
     start() {
         if (!this.gameStart) {
             this.gameStart = true;
+            this.ambientSound.play();
             requestAnimationFrame(this.gameLoop.bind(this));
         }
     }
 
     restart() {
         this.position = { 
-            x: this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.squareSize / 2), 
+            x: this.sideCoordinates.left.end - this.sideCoordinates.left.center - (this.squareSize / 2), 
             y: this.centerY - this.squareSize / 2 
         }
 
@@ -114,8 +118,9 @@ class Game {
 
     onClick() {
         if (this.gameStart && !this.gameOver) {
-            this.changeDirection();
+            this.turnSound.currentTime = 0;
             this.turnSound.play();
+            this.changeDirection();
         }
     }
 
@@ -128,22 +133,36 @@ class Game {
         this.centerX = this.gameCanvas.width / 2;
         this.centerY = this.gameCanvas.height / 2;
     
-        this.sideСoordinates = this.getСoordinates();
+        this.sideCoordinates = this.getCoordinates();
         this.food = this.generateFood();
 
         this.position = { 
-            x: this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.squareSize / 2), 
+            x: this.sideCoordinates.left.end - this.sideCoordinates.left.center - (this.squareSize / 2), 
             y: this.centerY - this.squareSize / 2 
         }
     
         this.render();
-    }    
+    }
+    
+    toggleSound() {
+        if (this.ambientSound.muted) {
+            this.ambientSound.muted = false;
+            this.foodSound.muted = false;
+            this.gameOverSound.muted = false;
+            this.turnSound.muted = false;
+        } else {
+            this.ambientSound.muted = true;
+            this.foodSound.muted = true;
+            this.gameOverSound.muted = true;
+            this.turnSound.muted = true;
+        }
+    }
 
     getRandomColor() {
         return this.squareColors[Math.floor(Math.random() * this.squareColors.length)];
     } 
     
-    getСoordinates() {
+    getCoordinates() {
         const coordinates = {
             top: {
                 start: this.centerY - this.trackSize / 2,
@@ -238,21 +257,23 @@ class Game {
     checkCollision() {
         if (this.gameOver) return;
 
-        const { top, bottom, left, right } = this.sideСoordinates;
+        const { top, bottom, left, right } = this.sideCoordinates;
         const square = this.squareSize;
 
         if (this.position.y < top.start || this.position.y > bottom.end - square || this.position.x < left.start || this.position.x > right.end - square) {
             this.gameOver = true;
+            this.gameOverSound.currentTime = 0;
             this.gameOverSound.play();
             this.generateFragments();
-            this.menu.showOverlay(this.menu.restartOverlay);
+            this.menu.showOverlay();
         }
 
         if (this.position.y < bottom.start && this.position.y > top.end - square && this.position.x < right.start && this.position.x > left.end - square) {
             this.gameOver = true;
+            this.gameOverSound.currentTime = 0;
             this.gameOverSound.play();
             this.generateFragments();
-            this.menu.showOverlay(this.menu.restartOverlay);
+            this.menu.showOverlay();
         }
     }
 
@@ -260,6 +281,7 @@ class Game {
         if (Math.abs(this.position.x - this.food.x) < this.squareSize && Math.abs(this.position.y - this.food.y) < this.squareSize) {
             this.score++;
             this.speed = this.speed + 0.02;
+            this.foodSound.currentTime = 0;
             this.foodSound.play();
             this.food = this.generateFood();
             if (Math.random() < 0.3) this.reverseDirection();
@@ -299,15 +321,15 @@ class Game {
         let foodX, foodY;
         if (randomSide === 'top') {
             foodX = this.centerX - this.foodSize / 2;
-            foodY = this.sideСoordinates.top.end - this.sideСoordinates.top.center - (this.foodSize / 2);
+            foodY = this.sideCoordinates.top.end - this.sideCoordinates.top.center - (this.foodSize / 2);
         } else if (randomSide === 'bottom') {
             foodX = this.centerX - this.foodSize / 2;
-            foodY = this.sideСoordinates.bottom.end - this.sideСoordinates.bottom.center - (this.foodSize / 2);
+            foodY = this.sideCoordinates.bottom.end - this.sideCoordinates.bottom.center - (this.foodSize / 2);
         } else if (randomSide === 'left') {
-            foodX = this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.foodSize / 2);
+            foodX = this.sideCoordinates.left.end - this.sideCoordinates.left.center - (this.foodSize / 2);
             foodY = this.centerY - this.foodSize / 2;
         } else if (randomSide === 'right') {
-            foodX = this.sideСoordinates.right.end - this.sideСoordinates.right.center - (this.foodSize / 2);
+            foodX = this.sideCoordinates.right.end - this.sideCoordinates.right.center - (this.foodSize / 2);
             foodY = this.centerY - this.foodSize / 2;
         }
 

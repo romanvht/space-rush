@@ -4,27 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Rush</title>
-    <link rel="stylesheet" href="assets/css/style.css?v0.0.8">
+    <link rel="stylesheet" href="assets/css/style.css?v0.0.85">
 </head>
 <body>
     <div id="startOverlay" class="overlay show">
         <button id="startButton">Начать игру</button>
-    </div>
-
-    <div id="restartOverlay" class="overlay">
         <button id="restartButton">Рестарт</button>
+        <button id="soundButton">Звук: ВКЛ</button>
     </div>
 
     <canvas id="game"></canvas>
     <canvas id="stars"></canvas>
 
-    <script src="assets/js/game.js?v0.0.8"></script>
-    <script src="assets/js/menu.js?v0.0.8"></script>
+    <script src="assets/js/game.js?v0.0.85"></script>
+    <script src="assets/js/menu.js?v0.0.85"></script>
     <script>  
         const game = new Game();
-        const menu = new Menu(game);
-
-        menu.init();
     </script>
 </body>
 </html>
