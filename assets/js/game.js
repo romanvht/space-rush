@@ -18,7 +18,7 @@ class Game {
         this.sideСoordinates = this.getСoordinates();
 
         this.positionHistory = [];
-        this.trailLength = 8;
+        this.trailLength = 6;
         this.trailSize = this.squareSize / 2;
 
         this.fragments = [];
@@ -356,16 +356,14 @@ class Game {
                 if (index < this.positionHistory.length) {
                     const pos = this.positionHistory[index];
                     const size = Math.max(this.squareSize / 10, this.trailSize * Math.max(0, 1 - i / this.trailLength));
-                    
-                    const jitterX = (Math.random() - 0.5) * 4 * (i / this.trailLength);
-                    const jitterY = (Math.random() - 0.5) * 4 * (i / this.trailLength);
-
+                    const jitter = (Math.random() - 0.5) * 4 * (i / this.trailLength);
                     const alpha = Math.ceil((1 - (i / this.trailLength)) * 100);
+
                     this.gameCtx.fillStyle = `${this.squareColor}${alpha}`;
 
                     this.gameCtx.fillRect(
-                        pos.x + (this.squareSize - size) / 2 + jitterX, 
-                        pos.y + (this.squareSize - size) / 2 + jitterY, 
+                        pos.x + (this.squareSize - size) / 2 + jitter, 
+                        pos.y + (this.squareSize - size) / 2 + jitter, 
                         size, 
                         size
                     );
