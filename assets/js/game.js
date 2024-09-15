@@ -10,42 +10,39 @@ class Game {
         this.centerX = this.gameCanvas.width / 2;
         this.centerY = this.gameCanvas.height / 2;
 
-        this.squareSize = 30;
-        this.foodSize = 20;
+        this.positionHistory = [];
+        this.fragments = [];
+        this.stars = [];
+        this.squareColors = ['#50fb78', '#fb5050', '#5078fb'];
+
         this.trackSize = 300;
         this.innerSquareSize = 160;
-
         this.sideСoordinates = this.getСoordinates();
-
-        this.positionHistory = [];
-        this.trailLength = 6;
-        this.trailSize = this.squareSize / 2;
-
-        this.fragments = [];
-
-        this.squareColors = ['#50fb78', '#fb5050', '#5078fb'];
+        this.squareSize = 30;
         this.squareColor = this.getRandomColor();
-
+        this.speed = 4;
         this.direction = 'up';
         this.reverse = false;
+        this.foodSize = 20;
+        this.food = this.generateFood();
+        this.foodRotation = 0;
 
         this.position = { 
             x: this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.squareSize / 2), 
             y: this.centerY - this.squareSize / 2 
         }
 
+        this.trailLength = 6;
+        this.trailSize = this.squareSize / 2;
+        this.trailInterval = 0.05;
+        this.trailTimer = 0;
         this.lastTime = 0;
-        this.speed = 4;
-
         this.score = 0;
-        this.food = this.generateFood();
 
         this.gameStart = false;
         this.gameOver = false;
         this.reverse = false;
-        this.foodRotation = 0;
 
-        this.stars = [];
         this.generateStars(100);
         this.render();
 
@@ -127,8 +124,12 @@ class Game {
         this.centerY = this.gameCanvas.height / 2;
     
         this.sideСoordinates = this.getСoordinates();
-        this.position = { x: this.centerX, y: this.centerY - this.trackSize / 2 + this.squareSize / 2 }
         this.food = this.generateFood();
+
+        this.position = { 
+            x: this.sideСoordinates.left.end - this.sideСoordinates.left.center - (this.squareSize / 2), 
+            y: this.centerY - this.squareSize / 2 
+        }
     
         this.render();
     }    
@@ -167,7 +168,7 @@ class Game {
     update(deltaTime) {
         this.foodRotation += 0.1 * deltaTime * 60;
         this.moveSquare(deltaTime);
-        this.updatePositionHistory();
+        this.updatePositionHistory(deltaTime);
 
         if (!this.gameOver) {
             this.checkCollision();
@@ -177,12 +178,16 @@ class Game {
         }
     }
 
-    updatePositionHistory() {
-        this.positionHistory.unshift({ x: this.position.x, y: this.position.y });
-        if (this.positionHistory.length > this.trailLength * 10) {
-            this.positionHistory.pop();
+    updatePositionHistory(deltaTime) {
+        this.trailTimer += deltaTime;
+        if (this.trailTimer >= this.trailInterval) {
+            this.positionHistory.unshift({ x: this.position.x, y: this.position.y, time: 0 });
+            this.trailTimer = 0;
         }
-    }      
+
+        this.positionHistory.forEach(pos => pos.time += deltaTime);
+        this.positionHistory = this.positionHistory.filter(pos => pos.time < this.trailLength * this.trailInterval);
+    }    
     
     updateFragments(deltaTime) {
         this.fragments = this.fragments.filter(fragment => fragment.life > 0);
@@ -234,14 +239,12 @@ class Game {
         if (this.position.y < top.start || this.position.y > bottom.end - square || this.position.x < left.start || this.position.x > right.end - square) {
             this.gameOver = true;
             this.generateFragments();
-            console.log('Game Over!');
             this.menu.showOverlay(this.menu.restartOverlay);
         }
 
         if (this.position.y < bottom.start && this.position.y > top.end - square && this.position.x < right.start && this.position.x > left.end - square) {
             this.gameOver = true;
             this.generateFragments();
-            console.log('Game Over!');
             this.menu.showOverlay(this.menu.restartOverlay);
         }
     }
@@ -351,24 +354,21 @@ class Game {
         this.gameCtx.clearRect(this.centerX - this.innerSquareSize / 2, this.centerY - this.innerSquareSize / 2, this.innerSquareSize, this.innerSquareSize);
 
         if (!this.gameOver) {
-            for (let i = 1; i <= this.trailLength; i++) {
-                const index = i * 5;
-                if (index < this.positionHistory.length) {
-                    const pos = this.positionHistory[index];
-                    const size = Math.max(this.squareSize / 10, this.trailSize * Math.max(0, 1 - i / this.trailLength));
-                    const jitter = (Math.random() - 0.5) * 4 * (i / this.trailLength);
-                    const alpha = Math.ceil((1 - (i / this.trailLength)) * 100);
+            this.positionHistory.forEach((pos) => {
+                const progress = pos.time / (this.trailLength * this.trailInterval);
+                const size = Math.max(this.squareSize / 10, this.trailSize * (1 - progress));
+                const jitter = (Math.random() - 0.5) * 4 * progress;
+                const alpha = Math.ceil(100 - progress * 100);
 
-                    this.gameCtx.fillStyle = `${this.squareColor}${alpha}`;
+                this.gameCtx.fillStyle = `${this.squareColor}${alpha}`;
 
-                    this.gameCtx.fillRect(
-                        pos.x + (this.squareSize - size) / 2 + jitter, 
-                        pos.y + (this.squareSize - size) / 2 + jitter, 
-                        size, 
-                        size
-                    );
-                }
-            }
+                this.gameCtx.fillRect(
+                    pos.x + (this.squareSize - size) / 2 + jitter, 
+                    pos.y + (this.squareSize - size) / 2 + jitter, 
+                    size, 
+                    size
+                );
+            });
 
             this.gameCtx.fillStyle = this.squareColor;
             this.gameCtx.fillRect(this.position.x, this.position.y, this.squareSize, this.squareSize);
