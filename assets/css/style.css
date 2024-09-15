@@ -57,8 +57,8 @@ canvas {
 }
 
 button {
-    min-width: 230px;
-    padding: 20px 40px;
+    min-width: 200px;
+    padding: 20px 30px;
     font-size: 24px;
     font-weight: bold;
     background-color: #5078fb;
@@ -73,12 +73,24 @@ button:hover {
     background-color: #2142b1;
 }
 
-#restartButton {
-    display: none;
+#soundButton {
+    background-color: #3cb371;
 }
 
 #soundButton.mute {
-    background-color: #2142b1;
+    background-color: #ff6347;
+}
+
+#soundButton:hover {
+    background-color: #2e8b57;
+}
+
+#soundButton.mute:hover {
+    background-color: #d83c28;
+}
+
+#restartButton {
+    display: none;
 }
 
 @media (max-width: 700px) {
