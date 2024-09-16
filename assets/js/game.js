@@ -1,14 +1,27 @@
 class Game {
     constructor() {
         this.initElements();
+        this.initGameState();
+        
+        this.stars = new Stars();
+        this.sound = new Sound();
+        this.menu = new Menu(this, this.sound);
+        this.input = new Input(this, this.sound);
 
-        this.gameCanvas.width = window.innerWidth;
-        this.gameCanvas.height = window.innerHeight;
-        this.starsCanvas.width = window.innerWidth;
-        this.starsCanvas.height = window.innerHeight;
+        this.render();
+    }
 
-        this.centerX = this.gameCanvas.width / 2;
-        this.centerY = this.gameCanvas.height / 2;
+    initElements() {
+        this.canvas = document.getElementById('game');
+        this.ctx = this.canvas.getContext('2d');
+    }
+
+    initGameState() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+
+        this.centerX = this.canvas.width / 2;
+        this.centerY = this.canvas.height / 2;
 
         this.positionHistory = [];
         this.fragments = [];
@@ -41,39 +54,12 @@ class Game {
         this.gameStart = false;
         this.gameOver = false;
         this.score = 0;
-
-        this.generateStars(100);
-        this.render();
-
-        this.initHandlers();
-    }
-
-    initElements() {
-        this.gameCanvas = document.getElementById('game');
-        this.starsCanvas = document.getElementById('stars');
-
-        this.gameCtx = this.gameCanvas.getContext('2d');
-        this.starsCtx = this.starsCanvas.getContext('2d');
-
-        this.menu = new Menu(this);
-
-        this.foodSound = new Audio('assets/sounds/food.wav');
-        this.gameOverSound = new Audio('assets/sounds/over.wav');
-        this.turnSound = new Audio('assets/sounds/turn.wav');
-        this.ambientSound = new Audio('assets/sounds/ambient.wav');
-        this.ambientSound.loop = true;
-    }
-
-    initHandlers() {
-        this.menu.init();
-        this.gameCanvas.addEventListener('click', this.onClick.bind(this));
-        window.addEventListener('resize', this.onResize.bind(this));
     }
 
     start() {
         if (!this.gameStart) {
             this.gameStart = true;
-            this.ambientSound.play();
+            this.sound.playAmbient();
             requestAnimationFrame(this.gameLoop.bind(this));
         }
     }
@@ -114,48 +100,6 @@ class Game {
 
     stop() {
         this.gameStart = false;
-    }
-
-    onClick() {
-        if (this.gameStart && !this.gameOver) {
-            this.turnSound.currentTime = 0;
-            this.turnSound.play();
-            this.changeDirection();
-        }
-    }
-
-    onResize() {
-        this.gameCanvas.width = window.innerWidth;
-        this.gameCanvas.height = window.innerHeight;
-        this.starsCanvas.width = window.innerWidth;
-        this.starsCanvas.height = window.innerHeight;
-    
-        this.centerX = this.gameCanvas.width / 2;
-        this.centerY = this.gameCanvas.height / 2;
-    
-        this.sideCoordinates = this.getCoordinates();
-        this.food = this.generateFood();
-
-        this.position = { 
-            x: this.sideCoordinates.left.end - this.sideCoordinates.left.center - (this.squareSize / 2), 
-            y: this.centerY - this.squareSize / 2 
-        }
-    
-        this.render();
-    }
-    
-    toggleSound() {
-        if (this.ambientSound.muted) {
-            this.ambientSound.muted = false;
-            this.foodSound.muted = false;
-            this.gameOverSound.muted = false;
-            this.turnSound.muted = false;
-        } else {
-            this.ambientSound.muted = true;
-            this.foodSound.muted = true;
-            this.gameOverSound.muted = true;
-            this.turnSound.muted = true;
-        }
     }
 
     getRandomColor() {
@@ -262,16 +206,14 @@ class Game {
 
         if (this.position.y < top.start || this.position.y > bottom.end - square || this.position.x < left.start || this.position.x > right.end - square) {
             this.gameOver = true;
-            this.gameOverSound.currentTime = 0;
-            this.gameOverSound.play();
+            this.sound.playGameOver();
             this.generateFragments();
             this.menu.showOverlay();
         }
 
         if (this.position.y < bottom.start && this.position.y > top.end - square && this.position.x < right.start && this.position.x > left.end - square) {
             this.gameOver = true;
-            this.gameOverSound.currentTime = 0;
-            this.gameOverSound.play();
+            this.sound.playGameOver();
             this.generateFragments();
             this.menu.showOverlay();
         }
@@ -281,21 +223,9 @@ class Game {
         if (Math.abs(this.position.x - this.food.x) < this.squareSize && Math.abs(this.position.y - this.food.y) < this.squareSize) {
             this.score++;
             this.speed = this.speed + 0.02;
-            this.foodSound.currentTime = 0;
-            this.foodSound.play();
+            this.sound.playFood();
             this.food = this.generateFood();
             if (Math.random() < 0.3) this.reverseDirection();
-        }
-    }
-
-    generateStars(count) {
-        for (let i = 0; i < count; i++) {
-            this.stars.push({
-                x: Math.random() * this.starsCanvas.width,
-                y: Math.random() * this.starsCanvas.height,
-                size: Math.random() * 3 + 1,
-                speed: Math.random() * 0.5 + 0.2
-            });
         }
     }
 
@@ -354,32 +284,20 @@ class Game {
         }
     }
 
-    renderStars() {
-        this.stars.forEach(star => {
-            this.starsCtx.fillStyle = '#c7c9c5';
-            this.starsCtx.fillRect(star.x, star.y, star.size, star.size);
-
-            star.x += star.speed;
-            if (star.x > this.starsCanvas.width) star.x = 0;
-        });
-    }
-
     renderFragments() {
-        this.gameCtx.fillStyle = this.squareColor;
+        this.ctx.fillStyle = this.squareColor;
         this.fragments.forEach(fragment => {
-            this.gameCtx.fillRect(fragment.x, fragment.y, fragment.size, fragment.size);
+            this.ctx.fillRect(fragment.x, fragment.y, fragment.size, fragment.size);
         });
     }
 
     render() {
-        this.gameCtx.clearRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
-        this.starsCtx.clearRect(0, 0, this.starsCanvas.width, this.starsCanvas.height);
+        this.stars.render();
 
-        this.renderStars();
-
-        this.gameCtx.fillStyle = 'rgba(255, 255, 255, .05)';
-        this.gameCtx.fillRect(this.centerX - this.trackSize / 2, this.centerY - this.trackSize / 2, this.trackSize, this.trackSize);
-        this.gameCtx.clearRect(this.centerX - this.innerSquareSize / 2, this.centerY - this.innerSquareSize / 2, this.innerSquareSize, this.innerSquareSize);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = 'rgba(255, 255, 255, .05)';
+        this.ctx.fillRect(this.centerX - this.trackSize / 2, this.centerY - this.trackSize / 2, this.trackSize, this.trackSize);
+        this.ctx.clearRect(this.centerX - this.innerSquareSize / 2, this.centerY - this.innerSquareSize / 2, this.innerSquareSize, this.innerSquareSize);
 
         if (!this.gameOver) {
             this.positionHistory.forEach((pos) => {
@@ -388,9 +306,9 @@ class Game {
                 const jitter = (Math.random() - 0.5) * 4 * progress;
                 const alpha = Math.ceil(100 - progress * 100);
 
-                this.gameCtx.fillStyle = `${this.squareColor}${alpha}`;
+                this.ctx.fillStyle = `${this.squareColor}${alpha}`;
 
-                this.gameCtx.fillRect(
+                this.ctx.fillRect(
                     pos.x + (this.squareSize - size) / 2 + jitter, 
                     pos.y + (this.squareSize - size) / 2 + jitter, 
                     size, 
@@ -398,26 +316,26 @@ class Game {
                 );
             });
 
-            this.gameCtx.fillStyle = this.squareColor;
-            this.gameCtx.fillRect(this.position.x, this.position.y, this.squareSize, this.squareSize);
+            this.ctx.fillStyle = this.squareColor;
+            this.ctx.fillRect(this.position.x, this.position.y, this.squareSize, this.squareSize);
         } else {
             this.renderFragments();
         }
 
-        this.gameCtx.save();
-        this.gameCtx.translate(this.food.x + this.foodSize / 2, this.food.y + this.foodSize / 2);
-        this.gameCtx.rotate(this.foodRotation);
-        this.gameCtx.fillStyle = '#ba95f3';
-        this.gameCtx.fillRect(-this.foodSize / 2, -this.foodSize / 2, this.foodSize, this.foodSize);
-        this.gameCtx.restore();
+        this.ctx.save();
+        this.ctx.translate(this.food.x + this.foodSize / 2, this.food.y + this.foodSize / 2);
+        this.ctx.rotate(this.foodRotation);
+        this.ctx.fillStyle = '#ba95f3';
+        this.ctx.fillRect(-this.foodSize / 2, -this.foodSize / 2, this.foodSize, this.foodSize);
+        this.ctx.restore();
 
-        this.gameCtx.save();
-        this.gameCtx.translate(this.centerX, this.centerY);
-        this.gameCtx.rotate(-Math.PI / 4);
-        this.gameCtx.fillStyle = 'rgba(255, 255, 255, .2)';
-        this.gameCtx.font = 'Bold 48px Arial';
-        this.gameCtx.textAlign = 'center';
-        this.gameCtx.fillText(this.score, 0, 18);
-        this.gameCtx.restore();
+        this.ctx.save();
+        this.ctx.translate(this.centerX, this.centerY);
+        this.ctx.rotate(-Math.PI / 4);
+        this.ctx.fillStyle = 'rgba(255, 255, 255, .2)';
+        this.ctx.font = 'Bold 48px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(this.score, 0, 18);
+        this.ctx.restore();
     }
 }

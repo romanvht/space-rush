@@ -1,10 +1,14 @@
 class Menu {
-    constructor(game) {
+    constructor(game, sound) {
         this.game = game;
+        this.sound = sound;
+
         this.startOverlay = document.getElementById('startOverlay');
         this.startButton = document.getElementById('startButton');
         this.restartButton = document.getElementById('restartButton');
         this.soundButton = document.getElementById('soundButton');
+
+        this.init();
     }
 
     init() {
@@ -26,7 +30,7 @@ class Menu {
     toggleSound() {
         this.soundButton.innerText = this.soundButton.innerText === 'Звук: ВКЛ' ? 'Звук: ВЫКЛ' : 'Звук: ВКЛ';
         this.soundButton.classList.toggle('mute');
-        this.game.toggleSound();
+        this.sound.toggleSound();
     }
 
     showOverlay() {
