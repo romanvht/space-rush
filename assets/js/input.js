@@ -1,6 +1,7 @@
 class Input {
-    constructor(game, sound) {
+    constructor(game, stars, sound) {
         this.game = game;
+        this.stars = stars;
         this.sound = sound;
 
         this.init();
@@ -19,14 +20,13 @@ class Input {
     }
 
     onResize() {
+        this.stars.canvas.width = window.innerWidth;
+        this.stars.canvas.height = window.innerHeight;
+
         this.game.canvas.width = window.innerWidth;
         this.game.canvas.height = window.innerHeight;
-        this.game.starsCanvas.width = window.innerWidth;
-        this.game.starsCanvas.height = window.innerHeight;
-    
         this.game.centerX = this.game.canvas.width / 2;
         this.game.centerY = this.game.canvas.height / 2;
-    
         this.game.sideCoordinates = this.game.getCoordinates();
         this.game.food = this.game.generateFood();
 

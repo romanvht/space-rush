@@ -6,7 +6,7 @@ class Game {
         this.stars = new Stars();
         this.sound = new Sound();
         this.menu = new Menu(this, this.sound);
-        this.input = new Input(this, this.sound);
+        this.input = new Input(this, this.stars, this.sound);
 
         this.render();
     }
@@ -25,7 +25,6 @@ class Game {
 
         this.positionHistory = [];
         this.fragments = [];
-        this.stars = [];
         this.squareColors = ['#50fb78', '#fb5050', '#5078fb'];
 
         this.trackSize = 300;
@@ -204,14 +203,19 @@ class Game {
         const { top, bottom, left, right } = this.sideCoordinates;
         const square = this.squareSize;
 
-        if (this.position.y < top.start || this.position.y > bottom.end - square || this.position.x < left.start || this.position.x > right.end - square) {
-            this.gameOver = true;
-            this.sound.playGameOver();
-            this.generateFragments();
-            this.menu.showOverlay();
-        }
+        const checkBigSquare =
+            this.position.y < top.start || 
+            this.position.y > bottom.end - square || 
+            this.position.x < left.start || 
+            this.position.x > right.end - square;
 
-        if (this.position.y < bottom.start && this.position.y > top.end - square && this.position.x < right.start && this.position.x > left.end - square) {
+        const checkSmallSquare =
+            this.position.y < bottom.start && 
+            this.position.y > top.end - square && 
+            this.position.x < right.start && 
+            this.position.x > left.end - square;
+
+        if (checkBigSquare || checkSmallSquare) {
             this.gameOver = true;
             this.sound.playGameOver();
             this.generateFragments();
