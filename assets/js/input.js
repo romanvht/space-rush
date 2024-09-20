@@ -8,7 +8,7 @@ class Input {
     }
 
     init() {
-        this.game.canvas.addEventListener('click', this.onClick.bind(this));
+        window.addEventListener('click', this.onClick.bind(this));
         window.addEventListener('resize', this.onResize.bind(this));
     }
 
