@@ -29,6 +29,7 @@ canvas {
 #game {
     transform: rotate(45deg);
     transform-origin: center center;
+    transition: transform .2s;
     z-index: 2;
 }
 
@@ -93,14 +94,14 @@ button:hover {
     display: none;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 700px), (max-height: 460px) {
     #game {
         transform: scale(0.8) rotate(45deg);
         transform-origin: center center;
     }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 350px), (max-height: 360px) {
     #game {
         transform: scale(0.6) rotate(45deg);
         transform-origin: center center;
