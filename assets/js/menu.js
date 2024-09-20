@@ -28,9 +28,9 @@ class Menu {
     }
 
     toggleSound() {
-        this.soundButton.innerText = this.soundButton.innerText === 'Звук: ВКЛ' ? 'Звук: ВЫКЛ' : 'Звук: ВКЛ';
-        this.soundButton.classList.toggle('mute');
         this.sound.toggleSound();
+        this.soundButton.innerHTML = this.sound.ambientSound.muted ? 'Звук: ВЫКЛ' : 'Звук: ВКЛ';
+        this.soundButton.classList.toggle('mute');
     }
 
     showOverlay() {
