@@ -252,22 +252,29 @@ class Game {
         const possibleSides = this.reverse ? directions['inverted'][this.direction] : directions['normal'][this.direction];
         const randomSide = possibleSides[Math.floor(Math.random() * possibleSides.length)];
 
-        let foodX, foodY;
-        if (randomSide === 'top') {
-            foodX = this.centerX - this.foodSize / 2;
-            foodY = this.sideCoordinates.top.end - this.sideCoordinates.top.center - (this.foodSize / 2);
-        } else if (randomSide === 'bottom') {
-            foodX = this.centerX - this.foodSize / 2;
-            foodY = this.sideCoordinates.bottom.end - this.sideCoordinates.bottom.center - (this.foodSize / 2);
-        } else if (randomSide === 'left') {
-            foodX = this.sideCoordinates.left.end - this.sideCoordinates.left.center - (this.foodSize / 2);
-            foodY = this.centerY - this.foodSize / 2;
-        } else if (randomSide === 'right') {
-            foodX = this.sideCoordinates.right.end - this.sideCoordinates.right.center - (this.foodSize / 2);
-            foodY = this.centerY - this.foodSize / 2;
-        }
-
-        return { x: foodX, y: foodY };
+        const foodPosition = {
+            top: {
+                foodX: this.centerX - this.foodSize / 2,
+                foodY: this.sideCoordinates.top.end - this.sideCoordinates.top.center - (this.foodSize / 2)
+            },
+            bottom: {
+                foodX: this.centerX - this.foodSize / 2,
+                foodY: this.sideCoordinates.bottom.end - this.sideCoordinates.bottom.center - (this.foodSize / 2)
+            },
+            left: {
+                foodX: this.sideCoordinates.left.end - this.sideCoordinates.left.center - (this.foodSize / 2),
+                foodY: this.centerY - this.foodSize / 2
+            },
+            right: {
+                foodX: this.sideCoordinates.right.end - this.sideCoordinates.right.center - (this.foodSize / 2),
+                foodY: this.centerY - this.foodSize / 2
+            }
+        };
+        
+        return { 
+            x: foodPosition[randomSide].foodX, 
+            y: foodPosition[randomSide].foodY 
+        };
     }
 
     generateFragments() {
