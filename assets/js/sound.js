@@ -55,7 +55,7 @@ class Sound {
         this.ambient.connect(this.gainNode);
         this.ambient.loop = true;
         this.ambient.start(0);
-        this.fadeSound(0.1, 1);
+        this.fadeSound(0.01, 1);
     }
 
     pauseAmbient() {
