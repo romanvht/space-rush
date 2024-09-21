@@ -68,7 +68,7 @@ class Sound {
         setTimeout(() => {
             this.ambient.stop();
             this.ambient = null;
-        }, 100);
+        }, 150);
     }
 
     unmuteAmbient() {
@@ -79,7 +79,7 @@ class Sound {
         this.fadeSound(1, 0.01);
         setTimeout(() => {
             this.gainNode.gain.value = 0
-        }, 100);
+        }, 150);
     }
 
     fadeSound(start, end, duration = 0.1) {
