@@ -234,22 +234,22 @@ class Game {
     }
 
     generateFood() {
-        let possibleSides = [];
-        switch (this.direction) {
-            case 'right':
-                possibleSides = ['right', 'bottom', 'left'];
-                break;
-            case 'down':
-                possibleSides = ['top', 'bottom', 'left'];
-                break;
-            case 'left':
-                possibleSides = ['left', 'top', 'right'];
-                break;
-            case 'up':
-                possibleSides = ['top', 'right', 'bottom'];
-                break;
-        }
+        const directions = {
+            normal: {
+                right: ['right', 'bottom', 'left'],
+                down: ['bottom', 'left', 'top'],
+                left: ['left', 'top', 'right'],
+                up: ['top', 'right', 'bottom']
+            },
+            inverted: {
+                left: ['left', 'bottom', 'right'],
+                down: ['bottom', 'right', 'top'],
+                right: ['right', 'top', 'left'],
+                up: ['top', 'left', 'bottom']
+            }
+        };
 
+        const possibleSides = this.reverse ? directions['inverted'][this.direction] : directions['normal'][this.direction];
         const randomSide = possibleSides[Math.floor(Math.random() * possibleSides.length)];
 
         let foodX, foodY;
