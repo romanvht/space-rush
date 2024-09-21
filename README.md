@@ -7,7 +7,7 @@ Space Rush — это казуальный таймкиллер, в которо
 1. Клонируйте репозиторий:
 
    ```bash
-   git clone https://github.com/ваш_пользователь/space-rush.git
+   git clone https://github.com/romanvht/space-rush.git
    ```
 
 2. Перейдите в каталог проекта:
