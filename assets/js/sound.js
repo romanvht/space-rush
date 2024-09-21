@@ -1,7 +1,11 @@
 class Sound {
-    constructor() {
+    constructor(game) {
+        this.game = game;
+
         this.context = new (window.AudioContext || window.webkitAudioContext)();
         this.sounds = {};
+        this.gainNode = this.context.createGain();
+        this.gainNode.connect(this.context.destination);
 
         this.loadSound('food', 'assets/sounds/food.wav');
         this.loadSound('over', 'assets/sounds/over.wav');
@@ -24,10 +28,9 @@ class Sound {
 
     playSound(name) {
         if (this.muted || !this.sounds[name]) return;
-        
         const source = this.context.createBufferSource();
         source.buffer = this.sounds[name];
-        source.connect(this.context.destination);
+        source.connect(this.gainNode);
         source.start(0);
     }
 
@@ -49,30 +52,41 @@ class Sound {
 
         this.ambient = this.context.createBufferSource();
         this.ambient.buffer = this.sounds['ambient'];
-        this.ambient.connect(this.context.destination);
+        this.ambient.connect(this.gainNode);
         this.ambient.loop = true;
         this.ambient.start(0);
+        this.fadeSound(0.1, 1);
     }
 
     pauseAmbient() {
         if (this.ambient) {
-            this.context.suspend();
+            this.fadeSound(1, 0.01);
+            setTimeout(() => this.context.suspend(), 100);
         }
     }
 
     resumeAmbient() {
         if (this.ambient) {
             this.context.resume();
+            this.fadeSound(0.01, 1);
         }
     }
 
-    toggleSound() {
-        if (this.muted) {
-            this.muted = false;
-            if (this.ambient) this.playAmbient();
-        } else {
-            this.muted = true;
-            if (this.ambient) this.ambient.stop();
-        }
+    fadeSound(start, end, duration = 0.1) {
+        this.gainNode.gain.setValueAtTime(start, this.context.currentTime);
+        this.gainNode.gain.exponentialRampToValueAtTime(end, this.context.currentTime + duration);
     }
+
+    toggleSound() {
+        this.muted = !this.muted;
+    
+        if (this.muted) {
+            this.pauseAmbient();
+            return;
+        }
+    
+        if (this.game.gameStart) {
+            this.ambient ? this.resumeAmbient() : this.playAmbient();
+        }
+    }  
 }

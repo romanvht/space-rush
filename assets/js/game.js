@@ -4,7 +4,7 @@ class Game {
         this.initGameState();
         
         this.stars = new Stars();
-        this.sound = new Sound();
+        this.sound = new Sound(this);
         this.menu = new Menu(this, this.sound);
         this.input = new Input(this, this.stars, this.sound);
 
