@@ -79,13 +79,12 @@ class Sound {
 
     toggleSound() {
         this.muted = !this.muted;
-    
+
+        if (!this.game.gameStart) return;
+
         if (this.muted) {
             this.pauseAmbient();
-            return;
-        }
-    
-        if (this.game.gameStart) {
+        } else {
             this.ambient ? this.resumeAmbient() : this.playAmbient();
         }
     }  
