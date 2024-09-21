@@ -41,9 +41,9 @@ class Input {
 
     onFocus() {
         if (document.hidden) {
-            this.sound.ambientSound.pause();
+            this.sound.pauseAmbient();
         } else {
-            this.sound.ambientSound.play();
+            this.sound.resumeAmbient();
         }
     }
 }

@@ -29,7 +29,7 @@ class Menu {
 
     toggleSound() {
         this.sound.toggleSound();
-        this.soundButton.innerHTML = this.sound.ambientSound.muted ? 'Звук: ВЫКЛ' : 'Звук: ВКЛ';
+        this.soundButton.innerHTML = this.sound.muted ? 'Звук: ВЫКЛ' : 'Звук: ВКЛ';
         this.soundButton.classList.toggle('mute');
     }
 
