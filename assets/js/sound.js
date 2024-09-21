@@ -47,6 +47,7 @@ class Sound {
     }
 
     playAmbient() {
+        if (!this.game.gameStart) return;
         if (this.muted || !this.sounds['ambient']) return;
         if (this.ambient) this.ambient.stop();
 
@@ -58,18 +59,27 @@ class Sound {
         this.fadeSound(0.01, 1);
     }
 
-    pauseAmbient() {
-        if (this.ambient) {
-            this.fadeSound(1, 0.01);
-            setTimeout(() => this.context.suspend(), 100);
-        }
+    stopAmbient() {
+        if (!this.game.gameStart) return;
+        if (!this.muted || !this.sounds['ambient']) return;
+        if (!this.ambient) return;
+
+        this.fadeSound(1, 0.01);
+        setTimeout(() => {
+            this.ambient.stop();
+            this.ambient = null;
+        }, 100);
     }
 
-    resumeAmbient() {
-        if (this.ambient) {
-            this.context.resume();
-            this.fadeSound(0.01, 1);
-        }
+    unmuteAmbient() {
+        this.fadeSound(0.01, 1);
+    }
+
+    muteAmbient() {
+        this.fadeSound(1, 0.01);
+        setTimeout(() => {
+            this.gainNode.gain.value = 0
+        }, 100);
     }
 
     fadeSound(start, end, duration = 0.1) {
@@ -79,12 +89,6 @@ class Sound {
 
     toggleSound() {
         this.muted = !this.muted;
-        if (!this.game.gameStart) return;
-
-        if (this.muted) {
-            this.pauseAmbient();
-        } else {
-            this.ambient ? this.resumeAmbient() : this.playAmbient();
-        }
-    }  
+        this.muted ? this.stopAmbient() : this.playAmbient();
+    }    
 }

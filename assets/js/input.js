@@ -40,8 +40,6 @@ class Input {
     }
 
     onFocus() {
-        if (!this.sound.muted) {
-            document.hidden ? this.sound.pauseAmbient() : this.sound.resumeAmbient();
-        }
+        document.hidden && !this.sound.muted ? this.sound.muteAmbient() : this.sound.unmuteAmbient();
     }
 }
