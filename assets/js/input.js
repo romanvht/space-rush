@@ -10,6 +10,7 @@ class Input {
     init() {
         window.addEventListener('click', this.onClick.bind(this));
         window.addEventListener('resize', this.onResize.bind(this));
+        window.addEventListener("visibilitychange", this.onFocus.bind(this));
     }
 
     onClick() {
@@ -36,5 +37,13 @@ class Input {
         }
     
         this.game.render();
+    }
+
+    onFocus() {
+        if (document.hidden) {
+            this.sound.ambientSound.pause();
+        } else {
+            this.sound.ambientSound.play();
+        }
     }
 }
