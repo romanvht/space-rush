@@ -167,35 +167,41 @@ class Game {
     }    
 
     changeDirection() {
-        if (!this.reverse) {
-            if (this.direction === 'right') this.direction = 'down';
-            else if (this.direction === 'down') this.direction = 'left';
-            else if (this.direction === 'left') this.direction = 'up';
-            else if (this.direction === 'up') this.direction = 'right';
-        } else {
-            if (this.direction === 'right') this.direction = 'up';
-            else if (this.direction === 'down') this.direction = 'right';
-            else if (this.direction === 'left') this.direction = 'down';
-            else if (this.direction === 'up') this.direction = 'left';
-        }
+        const directions = {
+            normal: ['right', 'down', 'left', 'up'],
+            inverted: ['right', 'up', 'left', 'down']
+        };
+
+        const current = this.reverse ? directions['inverted'] : directions['normal'];
+        const index = current.indexOf(this.direction);
+
+        this.direction = current[(index + 1) % current.length];
     }
 
     reverseDirection() {
-        if (this.direction === 'right') this.direction = 'left';
-        else if (this.direction === 'down') this.direction = 'up';
-        else if (this.direction === 'left') this.direction = 'right';
-        else if (this.direction === 'up') this.direction = 'down';
+        const directions = {
+            right: 'left',
+            down: 'up',
+            left: 'right',
+            up: 'down'
+        };
 
+        this.direction = directions[this.direction];
         this.reverse = !this.reverse;
     }
 
     moveSquare(deltaTime) {
         const movement = this.speed * deltaTime * 60;
-        if (this.direction === 'right') this.position.x += movement;
-        else if (this.direction === 'down') this.position.y += movement;
-        else if (this.direction === 'left') this.position.x -= movement;
-        else if (this.direction === 'up') this.position.y -= movement;
-    }
+        const directions = {
+            right: { x: movement, y: 0 },
+            down: { x: 0, y: movement },
+            left: { x: -movement, y: 0 },
+            up: { x: 0, y: -movement }
+        };
+    
+        this.position.x += directions[this.direction].x;
+        this.position.y += directions[this.direction].y;
+    }    
 
     checkCollision() {
         if (this.gameOver) return;
