@@ -3,9 +3,10 @@ class Game {
         this.initElements();
         this.initGameState();
         
+        this.storage = new Storage();
         this.stars = new Stars();
         this.sound = new Sound(this);
-        this.menu = new Menu(this, this.sound);
+        this.menu = new Menu(this, this.sound, this.storage);
         this.input = new Input(this, this.stars, this.sound);
 
         this.render();
@@ -223,8 +224,9 @@ class Game {
 
         if (checkBigSquare || checkSmallSquare) {
             this.gameOver = true;
-            this.sound.playGameOver();
             this.generateFragments();
+            this.sound.playGameOver();
+            this.storage.setBestScore(this.score);
             this.menu.showOverlay();
         }
     }

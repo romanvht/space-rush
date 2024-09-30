@@ -63,6 +63,26 @@ canvas {
     transition-delay: 0s;
 }
 
+.scores {
+    text-align: center;
+    border-radius: 10px;
+    padding: 20px 5px;
+    min-width: 200px;
+    background-color: rgba(10, 15, 40, .8);
+}
+
+.score {
+    color: rgba(255, 255, 255, .5);
+}
+
+.score:first-child {
+    margin-bottom: 5px;
+}
+
+.score.hidden {
+    display: none;
+}
+
 button {
     min-width: 200px;
     padding: 20px 30px;

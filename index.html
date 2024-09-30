@@ -5,23 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Rush</title>
     <link rel="icon" href="assets/img/icon.png" type="image/png">
-    <link rel="stylesheet" href="assets/css/style.css?v1.0.5">
+    <link rel="stylesheet" href="assets/css/style.css?v1.0.6">
 </head>
 <body>
     <div id="startOverlay" class="overlay show">
         <button id="startButton">Начать игру</button>
         <button id="restartButton">Рестарт</button>
         <button id="soundButton">Звук: ВКЛ</button>
+        <div class="scores">
+            <div class="score hidden">
+                Ваш счет: <span id="score">0</span>
+            </div>
+            <div class="score">
+                Лучший счет: <span id="best-score">0</span>
+            </div>
+        </div>
     </div>
 
     <canvas id="game"></canvas>
     <canvas id="stars"></canvas>
 
-    <script src="assets/js/stars.js?v1.0.5"></script>
-    <script src="assets/js/sound.js?v1.0.5"></script>
-    <script src="assets/js/input.js?v1.0.5"></script>
-    <script src="assets/js/menu.js?v1.0.5"></script>
-    <script src="assets/js/game.js?v1.0.5"></script>
+    <script src="assets/js/storage.js?v1.0.6"></script>
+    <script src="assets/js/stars.js?v1.0.6"></script>
+    <script src="assets/js/sound.js?v1.0.6"></script>
+    <script src="assets/js/input.js?v1.0.6"></script>
+    <script src="assets/js/menu.js?v1.0.6"></script>
+    <script src="assets/js/game.js?v1.0.6"></script>
     <script>  
         const game = new Game();
     </script>
